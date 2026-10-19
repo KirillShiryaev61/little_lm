@@ -1,0 +1,44 @@
+# OS
+.DS_Store
+
+# Python
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# IDE
+.vscode
+
+# Jupyter
+.ipynb_checkpoints/
+
+# ML
+models/*
+*.pt
+!models/.gitkeep
+
+# Data
+data/*
+*.csv
+*.json
+*.parquet
+*.txt
+!data/.gitkeep
+
+# Local Workspace
+local_workspace/
+
+
+
+
+
+
+
+
+
