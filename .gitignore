@@ -19,9 +19,7 @@ wheels/
 .ipynb_checkpoints/
 
 # ML
-models/*
 *.pt
-!models/.gitkeep
 
 # Data
 data/*

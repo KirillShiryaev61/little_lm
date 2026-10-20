@@ -1,6 +1,8 @@
 import argparse
-from pathlib import Path
-from src.model import Base_Model
+import yaml
+from src.base_model import BaseModel
+from core.constant import MODELS_DIR
+from core.schemas import BaseModelConfig
 
 SLASH = '=' * 65
 
@@ -11,18 +13,34 @@ def start_session() -> None:
 def end_session() -> None:
     print("\n", SLASH, "\nЗавершение сессии\n", SLASH, sep="")
 
+def get_model_n_config_class(model_name: str):
+    configs = {
+        'base_model': (BaseModel, BaseModelConfig),
+    }
+    if model_name not in configs.keys():
+        raise ValueError(f"Нет доступной модели для проверки гиперпараметров, доступны {configs.keys()}")
+    return configs[model_name]
+
 def main(model_name: str) -> None:
 
-    models_dir = Path(__file__).parent / "models"
-    weights_path = models_dir / f"{model_name}.pt"
+    weights_path = MODELS_DIR / model_name / f"{model_name}.pt"
+    config_path = MODELS_DIR / model_name / "config.yaml"
+
+    with open(config_path) as f:
+        config = yaml.safe_load(f)
+    Model, ModelConfig = get_model_n_config_class(model_name)
+    model_params = ModelConfig(**config['model'])
 
     # Инициализация модели
-    model = Base_Model(model_name=model_name)
+    model = Model(
+        model_name=model_name, 
+        config=model_params
+    )
     if weights_path.is_file():
         print(f"Веса найдены: {weights_path}")
         model.load_weights(weights_path)
     else:
-        print(f"Веса для модели '{model_name}' не найдены в {models_dir}")
+        print(f"Веса для модели '{model_name}' не найдены в {MODELS_DIR}")
         model.train()
 
     # Инференс модели
@@ -51,7 +69,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--model_name", 
         type=str, 
-        required=True,
+        default='base_model',
         help="Имя модели для инференса",
     )
     args = parser.parse_args()
