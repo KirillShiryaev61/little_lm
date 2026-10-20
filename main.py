@@ -1,10 +1,8 @@
 import argparse
 import yaml
 from src.base_model import BaseModel
-from core.constant import MODELS_DIR
+from core.constant import MODELS_DIR, SLASH
 from core.schemas import BaseModelConfig
-
-SLASH = '=' * 65
 
 def start_session() -> None:
     print(SLASH, "\nЧат с моделью запущен:\n", SLASH, sep="")
