@@ -1,0 +1,11 @@
+model:
+  data_path: data/cleaned_onegin.txt
+  context_size: 12
+  hidden_dim: 512
+  learning_rate: 0.5
+  batch_size: 256
+  num_epochs: 200
+  lenght_answer: 150
+  temperature: 0.6
+  random_state: 6011994
+  device: null

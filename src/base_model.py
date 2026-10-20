@@ -1,56 +1,39 @@
-from dataclasses import dataclass
-from typing import NamedTuple
-from pathlib import Path
 import torch
 from tqdm import tqdm
+from core.constant import MODELS_DIR
+from core.schemas import BaseModelConfig
+from core.types import (
+    PreparedData,
+    ResultForwardNet,
+    Weights,
+)
 
-class PreparedData(NamedTuple):
-    x_train: torch.Tensor
-    y_train: torch.Tensor
-
-class ResultForwardNet(NamedTuple):
-    x_one_hot: torch.Tensor
-    hidden_states: torch.Tensor
-    probs: torch.Tensor
-
-@dataclass
-class Weights:
-    w1: torch.Tensor
-    w2: torch.Tensor
-
-class Base_Model():
+class BaseModel():
     def __init__(
         self, 
         model_name: str,
-        data_path: str = 'data/cleaned_onegin.txt',
-        context_size: int = 12,
-        hidden_dim: int = 512,
-        learning_rate: float = 0.5,
-        batch_size: int = 256, 
-        num_epochs: int = 200,
-        lenght_answer: int = 150, 
-        temperature: float = 0.6,
-        device: str | None = None, 
-        random_state: int = 6011994, 
+        config: BaseModelConfig,
     ) -> None:
-        if device is None:
+        self.model_name = model_name
+
+        self.data_path = config.data_path
+        self.context_size = config.context_size
+        self.hidden_dim = config.hidden_dim
+        self.learning_rate = config.learning_rate
+        self.batch_size = config.batch_size
+        self.num_epochs = config.num_epochs
+        self.lenght_answer = config.lenght_answer
+        self.temperature = config.temperature
+        self.random_state = config.random_state
+        if config.device is None:
             self.device = "mps" if torch.backends.mps.is_available() else "cpu"
         else:
-            self.device = device
-        self.model_name = model_name
-        self.data_path = data_path
+            self.device = config.device
+        
         self.trained = False
-        self.learning_rate = learning_rate
-        self.context_size = context_size
-        self.hidden_dim = hidden_dim
-        self.batch_size = batch_size
-        self.num_epochs = num_epochs
-        self.lenght_answer = lenght_answer
-        self.temperature = temperature
         self.vocab_size = None
         self.char_to_id = {}
         self.id_to_char = {}
-        self.random_state = random_state
         self.gen = torch.Generator(device=self.device).manual_seed(self.random_state)
 
     def _prepare_data(
@@ -199,9 +182,11 @@ class Base_Model():
                 device=self.device
             )
             batch_indices = starts[
-                torch.randperm(len(starts), 
-                generator=self.gen, 
-                device=self.device)
+                torch.randperm(
+                    len(starts), 
+                    generator=self.gen, 
+                    device=self.device,
+                )
             ]
 
             for b in batch_indices:
@@ -234,7 +219,7 @@ class Base_Model():
         self.trained = True
         print(f"Выполнилось {epoch:02d} эпох | Средняя ошибка: {avg_loss:.4f}")
         print("Обучение модели закончено")
-        self.save_weights(filepath=f"models/{self.model_name}.pt")
+        self.save_weights(filepath=MODELS_DIR / self.model_name / f"{self.model_name}.pt")
         return None
 
     def generate(
@@ -271,14 +256,4 @@ class Base_Model():
             print(self.id_to_char[next_id], sep="", end="")
     
         return None
-
-
-
-        
-
     
-
-    
-
-    
-        
