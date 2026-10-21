@@ -1,8 +1,7 @@
 import argparse
 import yaml
-from src.base_model import BaseModel
 from core.constant import MODELS_DIR, SLASH
-from core.schemas import BaseModelConfig
+from core.models_init import get_model_n_config_class
 
 def start_session() -> None:
     print(SLASH, "\nЧат с моделью запущен:\n", SLASH, sep="")
@@ -10,14 +9,6 @@ def start_session() -> None:
 
 def end_session() -> None:
     print("\n", SLASH, "\nЗавершение сессии\n", SLASH, sep="")
-
-def get_model_n_config_class(model_name: str):
-    configs = {
-        'base_model': (BaseModel, BaseModelConfig),
-    }
-    if model_name not in configs.keys():
-        raise ValueError(f"Нет доступной модели для проверки гиперпараметров, доступны {configs.keys()}")
-    return configs[model_name]
 
 def main(model_name: str) -> None:
 

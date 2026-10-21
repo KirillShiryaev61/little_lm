@@ -1,8 +1,9 @@
+import matplotlib.pyplot as plt
 import torch
 from tqdm import tqdm
 from core.constant import MODELS_DIR
 from core.schemas import BaseModelConfig
-from core.types import (
+from core.model_types import (
     PreparedData,
     ResultForwardNet,
     Weights,
@@ -163,6 +164,25 @@ class BaseModel():
         print(f"Веса успешно загружены из {filepath}")
         return None
 
+    def get_loss_plot(
+            self,
+            loss: list,
+    ) -> None:
+        epochs = [i for i in range(1, self.num_epochs + 1)]
+        fig, ax = plt.subplots(figsize=(12, 6))
+        ax.plot(epochs, loss)
+        ax.axhline(loss[-1], color="red", linestyle="--")
+        ax.set_xlim(1, max(epochs))
+
+        plt.title("График динамики train_loss модели", fontweight="bold", fontsize=12)
+        plt.xlabel("Эпохи", fontsize=10)
+        plt.ylabel("train_loss", fontsize=10)
+        plt.legend([f"train_loss", f"last_epoch_loss: {loss[-1]:.3f}"], fontsize=10)
+        plt.tight_layout()
+        fig.savefig(MODELS_DIR / self.model_name / "train_loss_plot.png")
+        print("График динамики train_loss модели сохранен.")
+        return None
+
     def train(self) -> None:
         print("Запуск обучения модели...")
 
@@ -170,6 +190,7 @@ class BaseModel():
         self._init_weights()
 
         ar_batch = torch.arange(self.batch_size, device=self.device)
+        report_loss = []
         for epoch in tqdm(range(1, self.num_epochs + 1)):
             epochs_loss = 0.0
             num_batches = 0
@@ -214,12 +235,13 @@ class BaseModel():
                 # Обновление весов с шагом learning_rate
                 self.weights.w2 -= self.learning_rate * (hidden_states.T @ probs) / self.batch_size
                 self.weights.w1 -= self.learning_rate * (x_one_hot.T @ dh) / self.batch_size
+            report_loss.append(epochs_loss / num_batches)
 
-        avg_loss = epochs_loss / num_batches
         self.trained = True
-        print(f"Выполнилось {epoch:02d} эпох | Средняя ошибка: {avg_loss:.4f}")
+        print(f"Выполнилось {epoch:02d} эпох | Средняя ошибка последней эпохи: {report_loss[-1]:.4f}")
         print("Обучение модели закончено")
         self.save_weights(filepath=MODELS_DIR / self.model_name / f"{self.model_name}.pt")
+        self.get_loss_plot(report_loss)
         return None
 
     def generate(
@@ -230,6 +252,8 @@ class BaseModel():
         prompt: строка
         temperature: степень креативности (чем меньше, тем консервативнее выбор)
         """
+        if not self.trained:
+            raise RuntimeError("Модель еще не обучена")
         if len(prompt) < self.context_size:
             prompt = prompt.rjust(self.context_size)
         
