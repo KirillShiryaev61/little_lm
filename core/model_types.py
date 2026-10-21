@@ -18,3 +18,4 @@ class ResultForwardNet(NamedTuple):
 class Weights:
     w1: torch.Tensor
     w2: torch.Tensor
+    
