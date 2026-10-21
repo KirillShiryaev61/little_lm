@@ -278,6 +278,4 @@ class BaseModel():
             
             current_ids.append(next_id)
             print(self.id_to_char[next_id], sep="", end="")
-    
         return None
-    

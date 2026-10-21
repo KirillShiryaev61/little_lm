@@ -47,5 +47,3 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
     main(model_name=args.model_name)
-
-

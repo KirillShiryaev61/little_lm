@@ -7,6 +7,7 @@ MODEL_NAME = 'test_base_model'
 MODEL, MODEL_CONFIG = get_model_n_config_class(MODEL_NAME)
 CONFIG_PATH = MODELS_DIR / MODEL_NAME / "config.yaml"
 WEIGHTS_PATH = MODELS_DIR / MODEL_NAME / f"{MODEL_NAME}.pt"
+PLOT_PATH = MODELS_DIR / MODEL_NAME / "train_loss_plot.png"
 with open(CONFIG_PATH) as f:
     config = yaml.safe_load(f)
 MODEL_PARAMS = MODEL_CONFIG(**config["model"])
@@ -58,6 +59,7 @@ class TestBaseModel:
     def tests_clear(self):
         """Очистка файлов после тестирования"""
         WEIGHTS_PATH.unlink(missing_ok=True)
+        PLOT_PATH.unlink(missing_ok=True)
         assert not WEIGHTS_PATH.is_file()
+        assert not PLOT_PATH.is_file()
         
-
