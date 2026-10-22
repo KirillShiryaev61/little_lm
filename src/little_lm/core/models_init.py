@@ -1,11 +1,11 @@
 from little_lm.model.base_model import BaseModel
-from little_lm.model.model_v2 import ModelV2
-from little_lm.core.schemas import BaseModelConfig
+from little_lm.model.base_model_v2 import BaseModelV2
+from little_lm.core.schema import BaseModelConfig
 
 MODELS = {
     'test_base_model': (BaseModel, BaseModelConfig),
     'base_model': (BaseModel, BaseModelConfig),
-    'model_v2': (ModelV2, BaseModelConfig)
+    'model_v2': (BaseModelV2, BaseModelConfig)
 }
 
 def get_model_n_config_class(model_name: str):
