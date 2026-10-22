@@ -1,7 +1,7 @@
 from pathlib import Path
 
 SLASH = '=' * 65
-MODELS_DIR = Path(__file__).parent.parent / "models"
+MODELS_DIR = Path(__file__).resolve().parents[3] / "models"
 PROMPTS = (
     "Мой дядя самых",
     "Учил его всему шутя",

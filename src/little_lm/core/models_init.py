@@ -1,6 +1,6 @@
-from src.base_model import BaseModel
-from src.model_v2 import ModelV2
-from core.schemas import BaseModelConfig
+from little_lm.model.base_model import BaseModel
+from little_lm.model.model_v2 import ModelV2
+from little_lm.core.schemas import BaseModelConfig
 
 MODELS = {
     'test_base_model': (BaseModel, BaseModelConfig),
