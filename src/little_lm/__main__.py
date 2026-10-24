@@ -1,4 +1,5 @@
 import argparse
+from little_lm.core.constant import ACTUAL_MODEL
 from little_lm.cli import main
 
 if __name__ == "__main__":
@@ -6,7 +7,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--model_name", 
         type=str, 
-        default='base_model',
+        default=ACTUAL_MODEL,
         help="Имя модели для инференса",
     )
     args = parser.parse_args()
