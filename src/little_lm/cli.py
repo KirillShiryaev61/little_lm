@@ -1,7 +1,6 @@
-import argparse
 import yaml
-from core.constant import MODELS_DIR, SLASH
-from core.models_init import get_model_n_config_class
+from little_lm.core.constant import MODELS_DIR, SLASH
+from little_lm.core.models_init import get_model_n_config_class
 
 def start_session() -> None:
     print(SLASH, "\nЧат с моделью запущен:\n", SLASH, sep="")
@@ -51,15 +50,3 @@ def main(model_name: str) -> None:
 
     except (KeyboardInterrupt, EOFError):
         end_session()
-
-
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Инференс модели")
-    parser.add_argument(
-        "--model_name", 
-        type=str, 
-        default='base_model',
-        help="Имя модели для инференса",
-    )
-    args = parser.parse_args()
-    main(model_name=args.model_name)

@@ -1,7 +1,7 @@
 import yaml
-from core.constant import MODELS_DIR
-from core.model_types import PreparedData
-from core.models_init import get_model_n_config_class
+from little_lm.core.constant import MODELS_DIR
+from little_lm.core.model_types import PreparedData
+from little_lm.core.models_init import get_model_n_config_class
 
 MODEL_NAME = 'test_base_model'
 MODEL, MODEL_CONFIG = get_model_n_config_class(MODEL_NAME)

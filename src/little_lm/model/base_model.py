@@ -1,9 +1,9 @@
 import matplotlib.pyplot as plt
 import torch
 from tqdm import tqdm
-from core.constant import MODELS_DIR
-from core.schemas import BaseModelConfig
-from core.model_types import (
+from little_lm.core.constant import MODELS_DIR
+from little_lm.core.schema import BaseModelConfig
+from little_lm.core.model_types import (
     PreparedData,
     ResultForwardNet,
     Weights,

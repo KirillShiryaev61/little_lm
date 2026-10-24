@@ -3,8 +3,8 @@ from contextlib import redirect_stdout
 import io
 import polars as pl
 import yaml
-from core.constant import MODELS_DIR, PROMPTS
-from core.models_init import get_model_n_config_class
+from little_lm.core.constant import MODELS_DIR, PROMPTS, ACTUAL_MODEL
+from little_lm.core.models_init import get_model_n_config_class
 
 def main(model_name: str):
     Model, ModelConfig = get_model_n_config_class(model_name)
@@ -42,7 +42,7 @@ if __name__ == "__main__":
     parser.add_argument(
             "--model_name", 
             type=str, 
-            default='base_model',
+            default=ACTUAL_MODEL,
             help="Имя модели для сбора данных",
     )
     args = parser.parse_args()
