@@ -1,13 +1,16 @@
 from little_lm.model.base_model import BaseModel
 from little_lm.model.base_model_v2 import BaseModelV2
+from little_lm.model.tokenizer_model import TokenizerModel
 from little_lm.core.schema import BaseModelConfig
 
 MODELS = {
     'test_base_model': (BaseModel, BaseModelConfig),
     'test_base_model_v2': (BaseModelV2, BaseModelConfig),
+    'test_tokenizer_model': (TokenizerModel, BaseModelConfig),
     
     'base_model': (BaseModel, BaseModelConfig),
     'base_model_v2': (BaseModelV2, BaseModelConfig),
+    'tokenizer_model': (TokenizerModel, BaseModelConfig),
 }
 
 def get_model_n_config_class(model_name: str):
