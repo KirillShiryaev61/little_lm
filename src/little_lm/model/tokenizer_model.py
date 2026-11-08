@@ -1,4 +1,5 @@
 import re
+import textwrap
 from pathlib import Path
 
 import torch
@@ -48,6 +49,7 @@ class TokenizerModel(BaseModelV2):
         torch.manual_seed(self.random_state)
         torch.use_deterministic_algorithms(True)
 
+
     def _prepare_data(
         self,
         data_path: str | None = None,
@@ -84,6 +86,7 @@ class TokenizerModel(BaseModelV2):
         )
         return None
 
+
     def _init_models(self) -> None:
         """Инициализация модели"""
         self.net = Net(
@@ -118,6 +121,7 @@ class TokenizerModel(BaseModelV2):
         print(f"Веса успешно сохранены в {filepath}")
         return None
 
+
     def load_weights(
         self,
         filepath: Path,
@@ -138,6 +142,7 @@ class TokenizerModel(BaseModelV2):
         self.trained = True
         print(f"Веса успешно загружены из {filepath}")
         return None
+
 
     def train(self) -> None:
         print("Запуск обучения модели...")
@@ -177,6 +182,7 @@ class TokenizerModel(BaseModelV2):
         self.save_weights(filepath=MODELS_DIR / self.model_name / f"{self.model_name}.pt")
         self.get_loss_plot(report_loss)
         return None
+    
 
     def generate(
         self,
@@ -187,8 +193,9 @@ class TokenizerModel(BaseModelV2):
             raise RuntimeError("Модель еще не обучена")
 
         current_ids = self.tokenizer.encode(prompt)[-self.context_size:]
-        if len(current_ids) < self.context_size:
-            pad_needs = self.context_size - len(current_ids)
+        len_prompt = len(current_ids)
+        if len_prompt < self.context_size:
+            pad_needs = self.context_size - len_prompt
             current_ids = [self.tokenizer.pad_token_id] * pad_needs + current_ids
 
         for _ in range(self.lenght_answer):
@@ -208,6 +215,7 @@ class TokenizerModel(BaseModelV2):
 
             current_ids.append(next_id)
         
-        generated = self.tokenizer.decode(current_ids)
+        generated = self.tokenizer.decode(current_ids[len_prompt:])
+        generated = textwrap.fill(generated, width=90)
         print(generated)
         return generated
